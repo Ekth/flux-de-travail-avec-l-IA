@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant de Carte de Prix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .pricing-card {
+            width: 320px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 36px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .price .currency {
+            font-size: 18px;
+            vertical-align: top;
+        }
+
+        .price .period {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+            position: relative;
+        }
+
+        .features li:last-child {
+            border-bottom: none;
+        }
+
+        .features li::before {
+            content: '✓';
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .pricing-card {
+                width: 100%;
+                max-width: 320px;
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .price {
+                font-size: 28px;
+            }
+        }
+
+        /* Animation d'apparition */
+        .pricing-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="pricing-container"></div>
+
+    <script>
+        // Classe pour créer des cartes de prix réutilisables
+        class PricingCard {
+            constructor(title, price, currency, period, features, buttonText, onClick) {
+                this.title = title;
+                this.price = price;
+                this.currency = currency || '$';
+                this.period = period || '/mois';
+                this.features = features || [];
+                this.buttonText = buttonText || 'Commencer';
+                this.onClick = onClick || this.defaultClickHandler;
+            }
+
+            defaultClickHandler() {
+                alert('Fonctionnalité en cours de développement !');
+            }
+
+            createFeaturesList() {
+                return this.features.map(feature => `<li>${feature}</li>`).join('');
+            }
+
+            render() {
+                return `
+                    <div class="pricing-card">
+                        <h2 class="title">${this.title}</h2>
+                        <div class="price">
+                            <span class="currency">${this.currency}</span>${this.price}
+                            <span class="period">${this.period}</span>
+                        </div>
+                        <ul class="features">
+                            ${this.createFeaturesList()}
+                        </ul>
+                        <button class="btn" onclick="this.onClickHandler()">${this.buttonText}</button>
+                    </div>
+                `;
+            }
+
+            onClickHandler() {
+                this.onClick();
+            }
+        }
+
+        // Configuration des cartes de prix
+        const pricingCards = [
+            new PricingCard(
+                'Forfait de base',
+                '9,99',
+                '€',
+                '/mois',
+                [
+                    '1 Go de stockage',
+                    'Assistance de base',
+                    'Toutes les fonctionnalités principales',
+                    'Support par email'
+                ],
+                'Démarrer l\'essai',
+                () => {
+                    console.log('Essai démarré pour le forfait de base');
+                    alert('Essai gratuit démarré pour le forfait de base !');
+                }
+            ),
+            new PricingCard(
+                'Forfait Pro',
+                '19,99',
+                '€',
+                '/mois',
+                [
+                    '10 Go de stockage',
+                    'Assistance prioritaire',
+                    'Toutes les fonctionnalités avancées',
+                    'Support téléphonique',
+                    'Analytics avancées'
+                ],
+                'Choisir Pro',
+                () => {
+                    console.log('Forfait Pro sélectionné');
+                    alert('Forfait Pro sélectionné !');
+                }
+            ),
+            new PricingCard(
+                'Forfait Entreprise',
+                '49,99',
+                '€',
+                '/mois',
+                [
+                    'Stockage illimité',
+                    'Assistance dédiée',
+                    'Fonctionnalités personnalisées',
+                    'Support 24/7',
+                    'API personnalisée',
+                    'Formation incluse'
+                ],
+                'Contacter les ventes',
+                () => {
+                    console.log('Demande de contact entreprise');
+                    alert('Un commercial vous contactera dans les 24h !');
+                }
+            )
+        ];
+
+        // Fonction pour afficher les cartes
+        function displayPricingCards() {
+            const container = document.getElementById('pricing-container');
+            container.style.display = 'flex';
+            container.style.flexWrap = 'wrap';
+            container.style.gap = '20px';
+            container.style.justifyContent = 'center';
+            container.style.alignItems = 'center';
+
+            pricingCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.innerHTML = card.render();
+                
+                // Attacher l'événement click au bouton
+                const button = cardElement.querySelector('.btn');
+                button.addEventListener('click', () => card.onClick());
+                
+                container.appendChild(cardElement);
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            displayPricingCards();
+        });
+
+        // Fonction utilitaire pour créer une nouvelle carte
+        function createCustomCard(config) {
+            return new PricingCard(
+                config.title,
+                config.price,
+                config.currency,
+                config.period,
+                config.features,
+                config.buttonText,
+                config.onClick
+            );
+        }
+
+        // Exemple d'utilisation de la fonction utilitaire
+        // const customCard = createCustomCard({
+        //     title: 'Forfait Personnalisé',
+        //     price: '29,99',
+        //     currency: '€',
+        //     period: '/mois',
+        //     features: ['Fonctionnalité 1', 'Fonctionnalité 2'],
+        //     buttonText: 'Acheter maintenant',
+        //     onClick: () => alert('Achat effectué !')
+        // });
+    </script>
+</body>
+</html>
